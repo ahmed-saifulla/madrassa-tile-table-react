@@ -12,30 +12,29 @@ function App() {
   useEffect(() => {
     let SHEET_ID = '1cYBL-8HTymg53opj6Y5T2_UIIC4ELlHUCvMz4TzPF9E'
     let SHEET_TITLE = 'Sheet1';
-    let SHEET_RANGE = 'A1:D73'
+    let SHEET_RANGE = 'A1:E81'
     let FULL_URL = ('https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?sheet=' + SHEET_TITLE + '&range=' + SHEET_RANGE);
 
     fetch(FULL_URL)
       .then(res => res.text())
       .then(rep => {
-        console.log('aa');
         let data = JSON.parse(rep.substr(47).slice(0, -2));
 
         console.log({ data });
-
+        
         let colsArray = data.table.cols.map(item => item.label)
         let rowsArray = data.table.rows.map((item, index) => {
           return {
             day: (index % 2 == 0) ? item?.c[0]?.v : '',
-            class: ((index % 2 == 0) ? item?.c[1]?.v : data.table.rows[index - 1]?.c[1]?.v) || 'Pre-2',
+            class: ((index % 2 == 0) ? item?.c[1]?.v : data.table.rows[index - 1]?.c[1]?.v),
             period1: item?.c[2]?.v,
             period2: item?.c[3]?.v,
           }
         })
         let classesArray = data.table.rows.map((item, index) => {
-          return ((index % 2 == 0) ? item?.c[1]?.v : data.table.rows[index - 1]?.c[1]?.v) || 'Pre-2'
+          return ((index % 2 == 0) ? item?.c[1]?.v : data.table.rows[index - 1]?.c[1]?.v)
         })
-        setCols(colsArray)
+        setCols(colsArray)  
         setRows(rowsArray)
         setClasses([...new Set(classesArray)])
 
@@ -66,12 +65,12 @@ function App() {
     switch (item) {
       case 'Day':
         return 'day'
-      case 'Class':
-        return 'class'
       case 'Period 1':
         return 'period1'
       case 'Period 2':
         return 'period2'
+      case 'Grade':
+        return 'grade'
 
       default:
         return ''
